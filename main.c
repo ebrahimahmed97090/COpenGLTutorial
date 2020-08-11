@@ -7,9 +7,9 @@ void DisableOpenGL(HWND, HDC, HGLRC);
 
 
 int WINAPI WinMain(HINSTANCE hInstance,
-                   HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine,
-                   int nCmdShow)
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine,
+    int nCmdShow)
 {
     WNDCLASSEX wcex;
     HWND hwnd;
@@ -18,6 +18,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
     MSG msg;
     BOOL bQuit = FALSE;
     float theta = 0.0f;
+    //circle angle
+    int i;
+    float angle;
 
     /* register window class */
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -39,20 +42,20 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
     /* create main window */
     hwnd = CreateWindowEx(0,
-                          "GLSample",
-                          //window name
-                          "4 Shapes",
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT,
-                          CW_USEDEFAULT,
-                          //screen width
-                          1550,
-                          //screen height
-                          900,
-                          NULL,
-                          NULL,
-                          hInstance,
-                          NULL);
+        "GLSample",
+        //window name
+        "4 Shapes",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        //screen width
+        1550,
+        //screen height
+        900,
+        NULL,
+        NULL,
+        hInstance,
+        NULL);
 
     ShowWindow(hwnd, nCmdShow);
 
@@ -66,15 +69,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
             /* handle or dispatch messages */
             if (msg.message == WM_QUIT) {
                 bQuit = TRUE;
-            } else {
+            }
+            else {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
-        } else {
+        }
+        else {
             /* OpenGL animation code goes here */
             glClear(GL_COLOR_BUFFER_BIT);
             //background color
-            glClearColor(1,1,1,1);
+            glClearColor(1, 1, 1, 1);
             //start new shape
             glPushMatrix();
 
@@ -85,22 +90,36 @@ int WINAPI WinMain(HINSTANCE hInstance,
             GL_POLYGON connect points to each others and connect ending point with starting point
             and fills the shape with object color
             GL_TRIANGLES triange takes 3 points
+            every line takes a color (gradient)
+            Circle
+             glBegin(GL_POLYGON);
+            glColor3f(0.4, 1, 0.988);
+            //to paint arc or circle partialy you can change starting and ending point from loop
+            for(int i=0; i<=360; i++) {
+                float angle;
+                angle = i * 3.14 /180;
+                //to change the size of circle you can multiply 
+                //to move it you can add 
+                glVertex2f(.1*cos(angle)+.5,.1*sin(angle)-.3);
+            }
+            glEnd();
             */
             //line color
-            glColor3f(0,0,0);
+            glColor3f(0, 0, 0);
             //line points
-            glVertex2f(0,-1);//start
-            glVertex2f(0,1);//end
+            glVertex2f(0, -1);//start
+            glVertex2f(0, 1);//end
             //second line color (optional)
-            glColor3f(.9,0.5,0.8);
+            glColor3f(.9, 0.5, 0.8);
             //another line and so on
-             glVertex2f(-1,0);
-             glVertex2f(1,0);
+            glVertex2f(-1, 0);
+            glVertex2f(1, 0);
+
             glEnd();
             glPopMatrix();
             SwapBuffers(hDC);
             theta += 1.0f;
-            Sleep (1);
+            Sleep(1);
         }
     }
 
@@ -130,7 +149,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
         }
     }
-    break;
+                   break;
 
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -154,7 +173,7 @@ void EnableOpenGL(HWND hwnd, HDC* hDC, HGLRC* hRC)
     pfd.nSize = sizeof(pfd);
     pfd.nVersion = 1;
     pfd.dwFlags = PFD_DRAW_TO_WINDOW |
-                  PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+        PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
     pfd.cDepthBits = 16;
@@ -170,7 +189,7 @@ void EnableOpenGL(HWND hwnd, HDC* hDC, HGLRC* hRC)
     wglMakeCurrent(*hDC, *hRC);
 }
 
-void DisableOpenGL (HWND hwnd, HDC hDC, HGLRC hRC)
+void DisableOpenGL(HWND hwnd, HDC hDC, HGLRC hRC)
 {
     wglMakeCurrent(NULL, NULL);
     wglDeleteContext(hRC);
