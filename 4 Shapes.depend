@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1597107406 source:c:\users\ebrahim\desktop\college\computer graphics\4 different shapes\4 shapes\main.c
+	<windows.h>
+	<gl/gl.h>
+
